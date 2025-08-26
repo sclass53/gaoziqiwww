@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcadia Focus - Prototype</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="app-container">
+
+        <!-- S0: Splash Screen -->
+        <section id="page-splash" class="page active">
+            <div class="splash-content">
+                <svg class="logo" width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1>Arcadia Focus</h1>
+            </div>
+        </section>
+
+        <!-- S0.1: One-Time Mood Check-In -->
+        <section id="page-mood-check-in" class="page">
+            <div class="content-wrapper">
+                <h2>How are you feeling for this session?</h2>
+                <div class="mood-selector">
+                    <button class="mood-option" title="Focused">🧠</button>
+                    <button class="mood-option" title="Creative">💡</button>
+                    <button class="mood-option" title="Problem-Solving">⚙️</button>
+                    <button class="mood-option" title="Overwhelmed">😩</button>
+                    <button class="mood-option" title="Tired">😴</button>
+                </div>
+                <input type="text" class="text-input" placeholder="Optional: What are you working on? (e.g., 'refactoring API')">
+                <button class="btn btn-primary" data-target="page-album-recommendations">Find My Sound</button>
+            </div>
+        </section>
+
+        <!-- S1: Hub (Main Navigation Point) -->
+        <section id="page-hub" class="page">
+            <div class="content-wrapper">
+                <header class="hub-header">
+                    <h1>Hub</h1>
+                    <div class="current-mood-display">
+                        <span>Current Mood:</span>
+                        <select class="mood-select">
+                            <option>🧠 Focused</option>
+                            <option>💡 Creative</option>
+                            <option>⚙️ Problem-Solving</option>
+                            <option>😩 Overwhelmed</option>
+                            <option>😴 Tired</option>
+                            <option>Neutral</option>
+                        </select>
+                    </div>
+                </header>
+
+                <div class="hub-section">
+                    <h3>Quick Start</h3>
+                    <div class="quick-start-grid">
+                        <!-- Placeholder for recent sessions -->
+                        <div class="recent-session-card" data-target="page-player">
+                            <h4>Deep Gamma: Code Structure</h4>
+                            <p>Pomodoro (25/5) - 120 min</p>
+                        </div>
+                        <div class="recent-session-card" data-target="page-player">
+                            <h4>Alex's Gamma Refactor Mix</h4>
+                            <p>Custom Duration - 180 min</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hub-section">
+                    <h3>Explore & Create</h3>
+                    <div class="hub-nav-grid">
+                        <button class="btn btn-secondary" data-target="page-album-recommendations">Browse Recommendations</button>
+                        <button class="btn btn-secondary" data-target="page-song-generator-hub">Song Generator</button>
+                        <button class="btn btn-secondary" data-target="page-coop">Co-op Sync Mode</button>
+                        <button class="btn btn-secondary" data-target="page-settings">Settings & Log</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- S2: Album Recommendation -->
+        <section id="page-album-recommendations" class="page">
+            <div class="content-wrapper">
+                <header class="page-header">
+                    <button class="btn-back" data-target="page-hub">← Hub</button>
+                    <h2>Recommended For You</h2>
+                </header>
+                <div class="album-grid">
+                    <!-- Album cards will be dynamically inserted here. This is a template. -->
+                    <div class="album-card">
+                        <div class="album-art-placeholder"></div>
+                        <div class="album-info">
+                            <h3 class="album-title">Deep Gamma: Code Structure</h3>
+                            <div class="album-tags">
+                                <span class="tag">Gamma</span><span class="tag">Focus</span><span class="tag">Electronic</span>
+                            </div>
+                            <p>High-frequency soundscapes for intense problem-solving and logical tasks.</p>
+                            <div class="album-actions">
+                                <button class="btn btn-secondary btn-small">Preview</button>
+                                <button class="btn btn-primary btn-small select-album-btn" data-target="page-session-creator">Select</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="album-card">
+                        <div class="album-art-placeholder"></div>
+                        <div class="album-info">
+                            <h3 class="album-title">Calm Coder: Alpha Study</h3>
+                            <div class="album-tags">
+                                <span class="tag">Alpha</span><span class="tag">Calm</span><span class="tag">Lo-fi</span>
+                            </div>
+                            <p>Relaxed, non-intrusive beats to reduce stress during learning and documentation.</p>
+                            <div class="album-actions">
+                                <button class="btn btn-secondary btn-small">Preview</button>
+                                <button class="btn btn-primary btn-small select-album-btn" data-target="page-session-creator">Select</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- S3: Smart Session Creator -->
+        <section id="page-session-creator" class="page">
+            <div class="content-wrapper">
+                <header class="page-header">
+                    <button class="btn-back" data-target="page-album-recommendations">← Albums</button>
+                    <h2>Create Session</h2>
+                </header>
+                <div class="session-creator-content">
+                    <p>Selected Sound:</p>
+                    <h3 id="selected-album-title">Deep Gamma: Code Structure</h3>
+                    
+                    <div class="form-group">
+                        <label>Workflow</label>
+                        <div class="workflow-picker">
+                            <button class="workflow-option active">Standard Focus</button>
+                            <button class="workflow-option">Pomodoro (25/5)</button>
+                            <button class="workflow-option">Deep Work (50/10)</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="session-duration">Session Duration (minutes)</label>
+                        <input type="number" id="session-duration" class="text-input" value="60">
+                    </div>
+
+                    <div class="form-group toggle-group">
+                        <label for="shuffle-toggle">Shuffle Album</label>
+                        <label class="switch">
+                            <input type="checkbox" id="shuffle-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                     <div class="form-group toggle-group">
+                        <label for="coop-toggle">Make this a Co-op Session?</label>
+                        <label class="switch">
+                            <input type="checkbox" id="coop-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <button class="btn btn-primary btn-large" data-target="page-player">Start Focus Session</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- S4: Focus Session Player -->
+        <section id="page-player" class="page">
+            <div class="player-wrapper">
+                <div class="player-art-placeholder"></div>
+                <div class="track-info">
+                    <h2>Current Track Title</h2>
+                    <p>Deep Gamma: Code Structure</p>
+                </div>
+                <div class="timer-display">24:17</div>
+                <div class="progress-bar">
+                    <div class="progress-bar-inner"></div>
+                </div>
+                <div class="player-controls">
+                    <button class="player-btn secondary-btn" title="Loop Track">🔁</button>
+                    <button class="player-btn" title="Previous Track">⏮️</button>
+                    <button class="player-btn main-btn" title="Play/Pause">▶️</button>
+                    <button class="player-btn" title="Next Track">⏭️</button>
+                    <button class="player-btn secondary-btn info-btn" title="What's this frequency?">ℹ️</button>
+                </div>
+                <div class="feedback-controls">
+                    <button class="player-btn feedback-btn" title="Dislike">👎</button>
+                    <button class="player-btn feedback-btn" title="Like">👍</button>
+                </div>
+                <button class="btn btn-secondary end-session-btn" data-target="page-hub">End Session Early</button>
+            </div>
+        </section>
+
+        <!-- S5: Song Generator Hub -->
+        <section id="page-song-generator-hub" class="page">
+            <div class="content-wrapper">
+                <header class="page-header">
+                    <button class="btn-back" data-target="page-hub">← Hub</button>
+                    <h2>Song Generator</h2>
+                </header>
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="generator-smart">Smart Generator (AI)</button>
+                    <button class="tab-btn" data-tab="generator-custom">Custom Generator</button>
+                </div>
+
+                <!-- G1: Smart Generator -->
+                <div id="generator-smart" class="tab-content active">
+                    <p>Describe your ideal focus sound, and let AI create it.</p>
+                    <textarea class="text-input large" placeholder="e.g., 'Uplifting electronic with a spacey vibe for creative coding, subtle Theta waves.'"></textarea>
+                    <div class="generator-options">
+                        <select class="mood-select"><option>Mood: Creative</option></select>
+                        <select class="mood-select"><option>Tempo: Medium</option></select>
+                    </div>
+                    <button class="btn btn-primary">Generate Track</button>
+                    <!-- Placeholder for generated track preview -->
+                </div>
+
+                <!-- G2: Custom Generator -->
+                <div id="generator-custom" class="tab-content">
+                    <p>Craft your sound layer by layer for ultimate control.</p>
+                    <div class="custom-generator-layers">
+                        <!-- Layer Template -->
+                        <div class="layer-card">
+                            <div class="layer-header">
+                                <h4>Brainwave Layer</h4>
+                                <button class="btn-remove-layer">×</button>
+                            </div>
+                            <div class="layer-body">
+                                <select class="mood-select">
+                                    <option>Binaural Beats - Gamma (40Hz)</option>
+                                    <option>Isochronic Tones - Beta (15Hz)</option>
+                                </select>
+                                <label>Intensity</label>
+                                <input type="range" class="slider-input">
+                            </div>
+                        </div>
+                        <div class="layer-card">
+                            <div class="layer-header">
+                                <h4>Ambient Texture Layer</h4>
+                                <button class="btn-remove-layer">×</button>
+                            </div>
+                            <div class="layer-body">
+                                <select class="mood-select">
+                                    <option>Rain</option>
+                                    <option>Forest</option>
+                                    <option>White Noise</option>
+                                </select>
+                                <label>Volume</label>
+                                <input type="range" class="slider-input">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary">Add Layer</button>
+                    <div class="generator-actions">
+                        <button class="btn btn-secondary">Preview Mix</button>
+                        <button class="btn btn-primary" data-target="page-session-creator">Start Session with this Sound</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- S6: Co-op Sync Mode -->
+        <section id="page-coop" class="page">
+            <div class="content-wrapper">
+                <header class="page-header">
+                    <button class="btn-back" data-target="page-hub">← Hub</button>
+                    <h2>Co-op Sync Mode</h2>
+                </header>
+                <p>Start or join a synchronized focus session with your team.</p>
+                <div class="coop-actions">
+                    <button class="btn btn-primary">Create New Session</button>
+                    <div class="join-session">
+                        <input type="text" class="text-input" placeholder="Enter Session ID...">
+                        <button class="btn btn-secondary">Join Session</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- S7: Settings & User Profile -->
+        <section id="page-settings" class="page">
+            <div class="content-wrapper">
+                <header class="page-header">
+                    <button class="btn-back" data-target="page-hub">← Hub</button>
+                    <h2>Settings & Log</h2>
+                </header>
+                <div class="settings-section">
+                    <h3>Session Log</h3>
+                    <div class="session-log-list">
+                        <!-- Log Entry Template -->
+                        <div class="log-entry">
+                            <span class="log-date">2024-05-21</span>
+                            <span class="log-album">Deep Gamma: Code Structure</span>
+                            <span class="log-duration">120 min</span>
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-date">2024-05-20</span>
+                            <span class="log-album">Calm Coder: Alpha Study</span>
+                            <span class="log-duration">90 min</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3>UI Theme</h3>
+                    <div class="theme-selector">
+                        <div class="theme-option active" data-theme="vscode-dark">VS Code Dark+</div>
+                        <div class="theme-option" data-theme="coder-midnight">Coder Midnight</div>
+                        <div class="theme-option" data-theme="calm-light">Calm Light</div>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3>Break Time Soundscape</h3>
+                    <select class="mood-select">
+                        <option>Gentle Chimes</option>
+                        <option>Nature Sounds</option>
+                        <option>Silence</option>
+                    </select>
+                </div>
+                <div class="settings-section">
+                    <h3>About</h3>
+                    <a href="#" class="info-link">How It Works</a>
+                    <a href="#" class="info-link">Science Behind It</a>
+                    <a href="#" class="info-link">Privacy Policy</a>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
