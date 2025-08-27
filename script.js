@@ -1,3 +1,5 @@
+var OpenPreview;
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // =================================================================================
@@ -278,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <p>Contains ${album.songIds.length} tracks.</p>
                     <div class="album-actions">
-                        <button class="btn btn-secondary btn-small">Preview</button>
+                        <button class="btn btn-secondary btn-small" onclick="OpenPreview('${album.id}');">Preview</button>
                         <button class="btn btn-primary btn-small select-album-btn" data-album-id="${album.id}">Select</button>
                     </div>
                 </div>`;
@@ -424,4 +426,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const recommendations = await api.getAlbumRecommendations(appState.currentMood, appState.currentUser.preferences);
         renderAlbums(recommendations);
     });
+
+    function _OpenPreview(x){
+        var albums=mockAlbumDatabase;
+        var songs=mockSongDatabase;
+        // console.log(x);
+        const grid = document.getElementById('music-grid');
+        grid.innerHTML = ''; // Clear previous results
+        var yb=0;
+        albums[x].songIds.forEach(musicname => {
+            const card = document.createElement('div');
+            card.className = 'music-card';
+            card.innerHTML = `
+                <div class="music-art-placeholder">${++yb}</div>
+                <div class="music-info">
+                    <h4 class="music-title">${songs[musicname].title}</h3>
+                    <div class="music-tags">
+                        ${songs[musicname].tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                </div>`;
+            grid.appendChild(card);
+        });
+        navigateTo("page-music-preview");
+    }
+    OpenPreview=_OpenPreview;
 });

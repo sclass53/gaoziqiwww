@@ -37,8 +37,8 @@ body {
 #app-container {
     width: 100%;
     max-width: 420px; /* Mobile-first design */
-    height: 900px;
-    max-height: 98vh;
+    height: 850px;
+    max-height: 96vh;
     background-color: var(--bg-color);
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
@@ -532,4 +532,50 @@ textarea.large { min-height: 100px; }
     color: var(--accent-color);
     text-decoration: none;
     margin-top: 0.5rem;
+}
+
+.music-card {
+    background-color: var(--bg-color-light);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    text-align: left;
+    transition: transform 0.2s;
+}
+.music-card:hover {
+    transform: scale(1.01);
+}
+.music-art-placeholder {
+    width: 25px;
+    height: 25px;
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    flex-shrink: 0;
+    color: #f0f0f0;
+    padding-left: 7.5px;
+    padding-top: 3px;
+}
+.music-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.music-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.music-info{
+    font-size: 0.9rem;
+    color: var(--font-color-dark);
+}
+.music-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+.music-title {
+    color: #f0f0f0;
 }
