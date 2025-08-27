@@ -37,8 +37,8 @@ body {
 #app-container {
     width: 100%;
     max-width: 420px; /* Mobile-first design */
-    height: 800px;
-    max-height: 90vh;
+    height: 900px;
+    max-height: 98vh;
     background-color: var(--bg-color);
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
