@@ -1,7 +1,9 @@
 var OpenPreview;
 
 document.addEventListener('DOMContentLoaded', () => {
-
+    if (!localStorage.getItem('sessionLogs')) {
+        localStorage.setItem('sessionLogs', JSON.stringify([]));
+    }
     // =================================================================================
     // PART 1: MOCK BACKEND & STATE MANAGEMENT
     // Simulates your database and user session data.
@@ -238,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${mins}:${secs}`;
     };
 
-    const startSessionTimer = (durationMinutes) => {
+    var startSessionTimer = (durationMinutes) => {
         stopSessionTimer(); // Clear any existing timer
         appState.currentSession.secondsRemaining = durationMinutes * 60;
         playerElements.timer.textContent = formatTime(appState.currentSession.secondsRemaining);
@@ -450,4 +452,95 @@ document.addEventListener('DOMContentLoaded', () => {
         navigateTo("page-music-preview");
     }
     OpenPreview=_OpenPreview;
+
+    function addSessionLog(albumTitle, durationMinutes) {
+        const logEntry = {
+            date: new Date().toISOString().split('T')[0], // 格式化为YYYY-MM-DD
+            album: albumTitle,
+            duration: durationMinutes
+        };
+        
+        // 从localStorage获取现有日志
+        const existingLogs = JSON.parse(localStorage.getItem('sessionLogs') || '[]');
+        
+        // 添加新日志条目
+        existingLogs.unshift(logEntry); // 新日志放在最前面
+        
+        // 保存回localStorage
+        localStorage.setItem('sessionLogs', JSON.stringify(existingLogs));
+        
+        // 如果当前在设置页面，更新日志显示
+        if (document.getElementById('page-settings').classList.contains('active')) {
+            renderSessionLogs();
+        }
+    }
+
+    // 渲染会话日志
+    function renderSessionLogs() {
+        const logList = document.querySelector('.session-log-list');
+        if (!logList) return;
+        
+        // 从localStorage获取日志
+        const logs = JSON.parse(localStorage.getItem('sessionLogs') || '[]');
+        
+        // 清空现有日志显示
+        logList.innerHTML = '';
+        
+        // 添加日志条目
+        logs.forEach(log => {
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `
+                <span class="log-date">${log.date}</span>
+                <span class="log-album">${log.album}</span>
+                <span class="log-duration">${log.duration} min</span>
+            `;
+            logList.appendChild(logEntry);
+        });
+    }
+
+    // 在session结束时记录日志
+    // 修改结束会话的代码
+    document.getElementById('end-session-btn').addEventListener('click', () => {
+        // 计算实际持续时间（分钟）
+        const plannedDuration = appState.currentSession.plannedDuration;
+        const elapsedMinutes = Math.floor((plannedDuration * 60 - appState.currentSession.secondsRemaining) / 60);
+        const actualDuration = Math.max(1, elapsedMinutes); // 至少记录1分钟
+        
+        // 记录日志
+        addSessionLog(appState.currentSession.album.title, actualDuration);
+        
+        stopSessionTimer();
+        pauseTrack();
+        navigateTo('page-hub');
+    });
+
+    // 修改定时器结束时的代码
+    // 找到定时器回调函数，在session自然结束时添加日志记录
+    const timerCallback = () => {
+        appState.currentSession.secondsRemaining--;
+        playerElements.timer.textContent = formatTime(appState.currentSession.secondsRemaining);
+
+        if (appState.currentSession.secondsRemaining <= 0) {
+            console.log("Session complete!");
+            stopSessionTimer();
+            pauseTrack();
+            
+            // 记录日志 - 使用计划的持续时间
+            addSessionLog(appState.currentSession.album.title, appState.currentSession.plannedDuration);
+            
+            alert("Focus Session Complete!");
+            navigateTo('page-hub');
+        }
+    };
+
+    // 修改startSessionTimer函数以保存计划持续时间
+    const originalStartSessionTimer = startSessionTimer;
+    startSessionTimer = (durationMinutes) => {
+        appState.currentSession.plannedDuration = durationMinutes; // 保存计划持续时间
+        originalStartSessionTimer(durationMinutes);
+    };
+
+    // 在切换到设置页面时渲染日志
+    document.getElementById("settings-btn").addEventListener("click",renderSessionLogs);
 });
