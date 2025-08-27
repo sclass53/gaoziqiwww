@@ -166,11 +166,15 @@ h1, h2, h3, h4 {
     border: none;
     cursor: pointer;
     transition: transform 0.2s;
+    border-radius: 8px;
 }
 .mood-option:hover {
     transform: scale(1.2);
 }
-
+.mood-option:focus{
+    border: 2px solid #cccccc;
+    background-color: #444444;
+}
 /* S1: Hub */
 .hub-header {
     display: flex;
@@ -242,6 +246,10 @@ h1, h2, h3, h4 {
     color: var(--font-color-dark);
     font-size: 1rem;
     cursor: pointer;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    max-width: 80px;
 }
 .album-grid {
     display: flex;

@@ -25,7 +25,7 @@
 
         <!-- S0.1: One-Time Mood Check-In -->
         <section id="page-mood-check-in" class="page">
-            <div class="content-wrapper">
+            <div class="content-wrapper" style="padding-top: 40%;">
                 <h2>How are you feeling for this session?</h2>
                 <div class="mood-selector">
                     <button class="mood-option" data-mood="focused" title="Focused">🧠</button>
@@ -34,7 +34,7 @@
                     <button class="mood-option" data-mood="overwhelmed" title="Overwhelmed">😩</button>
                     <button class="mood-option" data-mood="tired" title="Tired">😴</button>
                 </div>
-                <input type="text" id="task-context-input" class="text-input" placeholder="Optional: What are you working on? (e.g., 'refactoring API')">
+                <!-- input type="text" id="task-context-input" class="text-input" placeholder="Optional: What are you working on? (e.g., 'refactoring API')" -->
                 <button id="find-sound-btn" class="btn btn-primary">Find My Sound</button>
             </div>
         </section>
@@ -45,7 +45,7 @@
                 <header class="hub-header">
                     <h1>Hub</h1>
                     <div class="current-mood-display">
-                        <span>Current Mood:</span>
+                        <span>Mood:</span>
                         <select id="hub-mood-select" class="mood-select">
                             <option value="focused">🧠 Focused</option>
                             <option value="creative">💡 Creative</option>
@@ -71,7 +71,7 @@
                 <div class="hub-section">
                     <h3>Explore & Create</h3>
                     <div class="hub-nav-grid">
-                        <button class="btn btn-secondary" data-target="page-album-recommendations">Browse Recommendations</button>
+                        <button id="get-recommend-btn" class="btn btn-secondary" data-target="page-album-recommendations">Browse Recommendations</button>
                         <button class="btn btn-secondary" data-target="page-song-generator-hub">Song Generator</button>
                         <button class="btn btn-secondary" data-target="page-coop">Co-op Sync Mode</button>
                         <button class="btn btn-secondary" data-target="page-settings">Settings & Log</button>
@@ -83,9 +83,9 @@
         <!-- S2: Album Recommendation -->
         <section id="page-album-recommendations" class="page">
             <div class="content-wrapper">
+                <button class="btn-back" data-target="page-hub">&lt; Hub</button>
                 <header class="page-header">
-                    <button class="btn-back" data-target="page-hub">← Hub</button>
-                    <h2>Recommended For You</h2>
+                    <h2>Recommends</h2>
                 </header>
                 <div id="album-grid" class="album-grid">
                     <!-- Album cards will be dynamically inserted here. -->
@@ -97,7 +97,7 @@
         <section id="page-session-creator" class="page">
             <div class="content-wrapper">
                 <header class="page-header">
-                    <button class="btn-back" data-target="page-album-recommendations">← Albums</button>
+                    <button class="btn-back" data-target="page-album-recommendations">&lt; Albums</button>
                     <h2>Create Session</h2>
                 </header>
                 <div class="session-creator-content">
@@ -169,8 +169,8 @@
         <!-- S5: Song Generator Hub -->
         <section id="page-song-generator-hub" class="page">
             <div class="content-wrapper">
+                <button class="btn-back" data-target="page-hub">&lt; Hub</button>
                 <header class="page-header">
-                    <button class="btn-back" data-target="page-hub">← Hub</button>
                     <h2>Song Generator</h2>
                 </header>
                 <div class="tabs">
@@ -237,8 +237,8 @@
         <!-- S6: Co-op Sync Mode -->
         <section id="page-coop" class="page">
             <div class="content-wrapper">
+                <button class="btn-back" data-target="page-hub">&lt; Hub</button>
                 <header class="page-header">
-                    <button class="btn-back" data-target="page-hub">← Hub</button>
                     <h2>Co-op Sync Mode</h2>
                 </header>
                 <p>Start or join a synchronized focus session with your team.</p>
@@ -255,8 +255,8 @@
         <!-- S7: Settings & User Profile -->
         <section id="page-settings" class="page">
             <div class="content-wrapper">
+                <button class="btn-back" data-target="page-hub">&lt; Hub</button>
                 <header class="page-header">
-                    <button class="btn-back" data-target="page-hub">← Hub</button>
                     <h2>Settings & Log</h2>
                 </header>
                 <div class="settings-section">

@@ -7,20 +7,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // IMPORTANT: Create a 'music' folder and place your mp3 files there.
     // Then, update the `url` properties below to match your filenames.
+    const gb = document.getElementById("get-recommend-btn");
+    document.getElementById("hub-mood-select").selectedIndex=5;
+
     const mockSongDatabase = {
         'song-01': { id: 'song-01', title: 'Gamma Pulse', url: 'music/song1.mp3', tags: ['gamma', 'electronic', 'focus'] },
         'song-02': { id: 'song-02', title: 'Logic Flow', url: 'music/song2.mp3', tags: ['gamma', 'ambient', 'focus', 'problem-solving'] },
-        'song-03': { id: 'song-03', title: 'Alpha Waves', url: 'music/song1.mp3', tags: ['alpha', 'lo-fi', 'calm', 'creative'] },
-        'song-04': { id: 'song-04', title: 'Study Beat', url: 'music/song2.mp3', tags: ['alpha', 'lo-fi', 'calm', 'study'] },
-        'song-05': { id: 'song-05', title: 'Beta Circuits', url: 'music/song1.mp3', tags: ['beta', 'electronic', 'problem-solving'] },
-        'song-06': { id: 'song-06', title: 'Creative Spark', url: 'music/song2.mp3', tags: ['theta', 'ambient', 'creative'] },
+        'song-03': { id: 'song-03', title: 'Cavalleria Rusticana', url: 'music/song3.mp3', tags: ['alpha', 'lo-fi', 'calm', 'creative'] },
+        'song-04': { id: 'song-04', title: 'Swan Lake', url: 'music/song4.mp3', tags: ['alpha', 'lo-fi', 'calm', 'study'] }
     };
 
     const mockAlbumDatabase = {
         'album-01': { id: 'album-01', title: 'Deep Gamma: Code Structure', songIds: ['song-01', 'song-02'], tags: ['gamma', 'focus', 'electronic'] },
-        'album-02': { id: 'album-02', title: 'Calm Coder: Alpha Study', songIds: ['song-03', 'song-04'], tags: ['alpha', 'calm', 'lo-fi'] },
-        'album-03': { id: 'album-03', title: 'Problem Solver\'s Toolkit', songIds: ['song-05', 'song-02'], tags: ['beta', 'gamma', 'problem-solving'] },
-        'album-04': { id: 'album-04', title: 'Creative Sandbox', songIds: ['song-06', 'song-03'], tags: ['theta', 'alpha', 'creative'] },
+        'album-02': { id: 'album-02', title: 'Calm Coder: Classical Music', songIds: ['song-03', 'song-04'], tags: ['alpha', 'calm', 'lo-fi'] }
     };
 
     // Global state for the application
@@ -42,6 +41,33 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         currentMood: 'neutral',
     };
+
+    const savePreferencesToLocalStorage = () => {
+                const preferences = {
+                    likedTags: Array.from(appState.currentUser.preferences.likedTags),
+                    dislikedTags: Array.from(appState.currentUser.preferences.dislikedTags)
+                };
+                localStorage.setItem('userMusicPreferences', JSON.stringify(preferences));
+                console.log("Preferences saved to localStorage:", preferences);
+            };
+
+            // Load preferences from localStorage
+            const loadPreferencesFromLocalStorage = () => {
+                const savedPreferences = localStorage.getItem('userMusicPreferences');
+                if (savedPreferences) {
+                    try {
+                        const preferences = JSON.parse(savedPreferences);
+                        appState.currentUser.preferences.likedTags = new Set(preferences.likedTags || []);
+                        appState.currentUser.preferences.dislikedTags = new Set(preferences.dislikedTags || []);
+                        console.log("Preferences loaded from localStorage:", preferences);
+                        
+                        // Update the UI to show loaded preferences
+                        // updatePreferencesUI();
+                    } catch (e) {
+                        console.error("Error parsing saved preferences:", e);
+                    }
+                }
+            };
 
     // =================================================================================
     // PART 2: PLUGGABLE API STUBS / SERVICE LAYER
@@ -92,11 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 return { ...album, score };
             });
-
+            console.log(scoredAlbums);
             scoredAlbums.sort((a, b) => b.score - a.score);
             
             return new Promise(resolve => {
-                setTimeout(() => resolve(scoredAlbums), 300); // Simulate network delay
+                setTimeout(() => resolve(scoredAlbums), 100); // Simulate network delay
             });
             // --- END of Pluggable Section: Recommender ---
         },
@@ -278,6 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('find-sound-btn').addEventListener('click', async () => {
         const selectedMood = document.querySelector('.mood-option.selected')?.dataset.mood || 'neutral';
         appState.currentMood = selectedMood;
+        document.getElementById("hub-mood-select").value=selectedMood;
         const recommendations = await api.getAlbumRecommendations(appState.currentMood, appState.currentUser.preferences);
         renderAlbums(recommendations);
         navigateTo('page-album-recommendations');
@@ -349,10 +376,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 appState.currentUser.preferences.likedTags.add(tag);
                 appState.currentUser.preferences.dislikedTags.delete(tag);
             } else {
-                appState.currentUser.preferences.dislikedTags.add(tag);
+                appState.currentUser.preferences.dislikedTags.add(tag); 
                 appState.currentUser.preferences.likedTags.delete(tag);
             }
         });
+        savePreferencesToLocalStorage();
         console.log("Updated User Preferences:", appState.currentUser.preferences);
         alert(`Feedback recorded! Your future recommendations will be adjusted.`);
     };
@@ -382,6 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- App Initialization ---
     const initApp = () => {
+        loadPreferencesFromLocalStorage();
         setTimeout(() => {
             navigateTo('page-mood-check-in');
         }, 1500);
@@ -389,4 +418,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initApp();
     playerElements.playPauseBtn.addEventListener("click",plpa);
+    gb.addEventListener("click",async () => {
+        console.log(document.getElementById("hub-mood-select").value);
+        appState.currentMood=document.getElementById("hub-mood-select").value;
+        const recommendations = await api.getAlbumRecommendations(appState.currentMood, appState.currentUser.preferences);
+        renderAlbums(recommendations);
+    });
 });
