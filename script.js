@@ -263,11 +263,13 @@ document.addEventListener('DOMContentLoaded', () => {
             appState.currentSession.secondsRemaining = appState.currentSession.breakDuration;
             
             phaseDisplay.textContent = 'On a Break';
+            if(enabledbreak) phaseDisplay.textContent = 'On a Break (Hie Hie I told you not to click)';
             playerWrapper.classList.add('break-active');
             
             pauseTrack(); // Pause main music
             if(enabledbreak){
-                breakAudioPlayer.pause(); 
+                //breakAudioPlayer.pause(); 
+                //breakAudioPlayer.currentTime=1;
                 breakAudioPlayer.play(); // Play break music
             }
         } else {
@@ -306,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
         breakAudioPlayer.pause();
         breakAudioPlayer.currentTime = 0;
         stopSessionTimer(); // Ensure any old timer is stopped
-        appState.currentSession.plannedDuration = config.focusDuration;
+        appState.currentSession.plannedDuration = config.focusDuration/60;
         appState.currentSession.focusDuration = config.focusDuration;
         appState.currentSession.breakDuration = config.breakDuration;
         appState.currentSession.secondsRemaining = config.focusDuration;
