@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             pauseTrack(); // Pause main music
             if(enabledbreak){
-                //breakAudioPlayer.pause(); 
+                breakAudioPlayer.pause(); 
                 //breakAudioPlayer.currentTime=1;
                 breakAudioPlayer.play(); // Play break music
             }
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
             phaseDisplay.textContent = 'Focus Time';
             playerWrapper.classList.remove('break-active');
 
-            if(enabledbreak)breakAudioPlayer.pause(); // Pause break music
+            breakAudioPlayer.pause(); // Pause break music
             // Only resume main track if it was playing before the break
             if (appState.currentSession.playlist.length > 0) {
                 audioPlayer.play();
