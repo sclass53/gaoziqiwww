@@ -15,6 +15,46 @@
     --font-family-main: 'Inter', sans-serif;
     --font-family-mono: 'Source Code Pro', monospace;
 }
+body[data-theme="vscode-dark"] {
+    --bg-color: #1e1e1e;
+    --bg-color-light: #252526;
+    --bg-color-lighter: #333333;
+    --border-color: #3c3c3c;
+    --font-color: #d4d4d4;
+    --font-color-dark: #8c8c8c;
+    --accent-color: #007acc;
+    --accent-color-hover: #0098e6;
+    --tag-bg-color: #3a3d41;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+}
+
+/* 2. New Theme: Calm Light (Dreamy White) */
+body[data-theme="calm-light"] {
+    --bg-color: #FFFFFF;
+    --bg-color-light: #F6F8FB;      /* Frost / Surfaces */
+    --bg-color-lighter: #EEF2F7;   /* Inputs */
+    --border-color: #E3E9F1;       /* Divider */
+    --font-color: #2E3A44;         /* Primary Text */
+    --font-color-dark: #60707D;    /* Secondary Text */
+    --accent-color: #7BC7FF;        /* Opal */
+    --accent-color-hover: #5faae0;
+    --tag-bg-color: #EEF2F7;
+    --shadow-color: rgba(25, 36, 46, 0.06);
+}
+
+/* 3. New Theme: Coder Midnight (Art-Deco) */
+body[data-theme="coder-midnight"] {
+    --bg-color: #0C0F14;           /* Ink */
+    --bg-color-light: #15181D;      /* Jet */
+    --bg-color-lighter: #2A2E35;   /* Graphite for surfaces */
+    --border-color: #2A2E35;       /* Graphite */
+    --font-color: #FFF9EF;         /* Ivory */
+    --font-color-dark: #F3E7C9;    /* Champagne */
+    --accent-color: #0E5D45;        /* Emerald */
+    --accent-color-hover: #1B7A60;
+    --tag-bg-color: #2A2E35;
+    --shadow-color: rgba(0, 0, 0, 0.45);
+}
 
 /* --- BASE & RESET --- */
 * {
@@ -36,15 +76,14 @@ body {
 
 #app-container {
     width: 100%;
-    max-width: 420px; /* Mobile-first design */
+    max-width: 1000px; /* Mobile-first design */
     height: 850px;
     max-height: 96vh;
-    background-color: var(--bg-color);
+    background: none;
     border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     overflow: hidden;
     position: relative;
-    border: 1px solid var(--border-color);
+    border: none;
 }
 
 /* --- PAGE MANAGEMENT & TRANSITIONS --- */
@@ -374,7 +413,7 @@ h1, h2, h3, h4 {
     width: 20px;
     left: 4px;
     bottom: 4px;
-    background-color: white;
+    /*background-color: white;*/
     transition: .4s;
     border-radius: 50%;
 }
@@ -486,12 +525,22 @@ textarea.large { min-height: 100px; }
 .layer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
 .btn-remove-layer { background: none; border: none; color: var(--font-color-dark); font-size: 1.5rem; cursor: pointer; }
 .layer-body { display: flex; flex-direction: column; gap: 0.5rem; }
-.slider-input { width: 100%; }
-.generator-actions { display: flex; gap: 1rem; margin-top: auto; }
+.slider-input { width: 100%; background: none;}
+.slider-input::-moz-range-track{
+    background-color:var(--accent-color);
+    height: 6px;
+    border-radius: 3px;
+}
+.slider-input::-webkit-slider-runnable-track{
+    background-color:var(--accent-color);
+    height: 6px;
+    border-radius: 3px;
+}
+.generator-actions { display: flex; gap: 0.5rem; margin-top: auto; }
 
 /* S6: Co-op */
 .coop-actions { display: flex; flex-direction: column; gap: 1rem; width: 100%; }
-.join-session { display: flex; gap: 0.5rem; }
+.join-session { display: flex; gap: 1rem; }
 .join-session .text-input { flex-grow: 1; }
 
 /* S7: Settings */
@@ -613,4 +662,148 @@ textarea.large { min-height: 100px; }
 .preview-area {
     justify-content: center;
     display: flexbox;
+}
+
+/* --- NEW: Custom Generator Detailed Styles --- */
+
+.custom-generator-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem; /* Increased gap for better spacing */
+    padding-top: 1rem;
+}
+
+.accordion {
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    background-color: var(--bg-color-light);
+}
+
+.accordion summary {
+    padding: 0.8rem;
+    cursor: pointer;
+    font-weight: 500;
+    list-style: none; /* Remove default arrow */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.accordion summary::-webkit-details-marker {
+    display: none; /* Hide arrow for Chrome/Safari */
+}
+
+.accordion summary::after {
+    content: '▶';
+    font-size: 0.8em;
+    transition: transform 0.2s;
+}
+
+.accordion[open] > summary::after {
+    transform: rotate(90deg);
+}
+
+.accordion[open] > .custom-generator-controls {
+    padding: 0 1rem 1rem 1rem; /* Padding only when open */
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.ir{
+    accent-color: var(--accent-color);
+}
+
+.slider-value {
+    font-family: var(--font-family-mono);
+    background-color: var(--bg-color-lighter);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.9em;
+    min-width: 40px;
+    display: inline-block;
+    text-align: center;
+}
+
+.preset-loader {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Tooltip Styles */
+.tooltip-container {
+    position: relative;
+    cursor: help;
+    border-bottom: 1px dotted var(--font-color-dark);
+}
+
+.tooltip-container::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%; /* Position above the label */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #000;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.tooltip-container:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+.preview-area {
+    margin-top: 1.5rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.page {
+    overflow-y: auto; 
+}
+
+@media (min-width: 768px) {
+    body {
+        
+        padding: 2rem;
+    }
+
+    #app-container {
+        
+        max-width: 800px; 
+
+        
+        height: 800px;
+        max-height: 90vh;
+
+        
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    
+    .hub-nav-grid, .album-grid {
+        
+        grid-template-columns: 1fr 1fr;
+    }
 }

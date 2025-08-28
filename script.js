@@ -152,6 +152,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return await response.blob();
         },
+        generateSongCustom: async (prompt, params) => {
+            const response = await fetch(`${API_BASE_URL}/generate-custom`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt, params })
+            });
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || 'Failed to generate custom song.');
+            }
+            return await response.blob();
+        }
     };
 
     // =================================================================================
@@ -292,7 +304,60 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => navigateTo(btn.dataset.target));
     });
 
-    // --- Initial Mood Check-in ---
+    //Music generator tabs
+    const tabButtons = document.querySelectorAll('#page-song-generator-hub .tab-btn');
+    const tabContents = document.querySelectorAll('#page-song-generator-hub .tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Get the target tab content ID from the button's data attribute
+            const targetTab = button.getAttribute('data-tab');
+
+            // Update button active states
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            // Update content visibility
+            tabContents.forEach(content => {
+                if (content.id === targetTab) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        });
+    });
+
+    const themeSelector = document.querySelector('.theme-selector');
+    const themeOptions = document.querySelectorAll('.theme-option');
+    const body = document.body;
+
+    // Function to apply a theme
+    const applyTheme = (themeName) => {
+        body.dataset.theme = themeName;
+        themeOptions.forEach(option => {
+            if (option.dataset.theme === themeName) {
+                option.classList.add('active');
+            } else {
+                option.classList.remove('active');
+            }
+        });
+        localStorage.setItem('resonAIteTheme', themeName);
+    };
+
+    themeSelector.addEventListener('click', (e) => {
+        if (e.target.classList.contains('theme-option')) {
+            const selectedTheme = e.target.dataset.theme;
+            applyTheme(selectedTheme);
+        }
+    });
+    const loadSavedTheme = () => {
+        const savedTheme = localStorage.getItem('resonAIteTheme');
+        if (savedTheme) {
+            applyTheme(savedTheme);
+        }
+    };
+
     document.getElementById('find-sound-btn').addEventListener('click', async () => {
         const selectedMood = document.querySelector('.mood-option.selected')?.dataset.mood || 'neutral';
         appState.currentMood = selectedMood;
@@ -423,18 +488,101 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error(error);
             alert(`Error: ${error.message}`);
+            previewArea.innerHTML='';
         } finally {
             btn.textContent = originalText;
             btn.disabled = false;
-            previewArea.innerHTML='';
         }
     });
 
 
+const frontendPresets = {
+        Focus: { beat_hz: 40.0, carrier_hz: 400.0, mod_depth: 0.25, noise_level: 0.10, tone_level: 0.08, noise_color: "white" },
+        Study: { beat_hz: 16.0, carrier_hz: 350.0, mod_depth: 0.20, noise_level: 0.06, tone_level: 0.05, noise_color: "pink" },
+        Relax: { beat_hz: 8.0, carrier_hz: 400.0, mod_depth: 0.25, noise_level: 0.08, tone_level: 0.07, noise_color: "pink" },
+    };
+
+    document.querySelectorAll('.custom-preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const presetName = btn.dataset.preset;
+            const values = frontendPresets[presetName];
+            if (values) {
+                // Update all the sliders/radios in the custom generator form
+                const beatSlider = document.getElementById('beat-hz-slider');
+                const carrierSlider = document.getElementById('carrier-hz-slider');
+                const modSlider = document.getElementById('mod-depth-slider');
+                const noiseSlider = document.getElementById('noise-level-slider');
+                const toneSlider = document.getElementById('tone-level-slider');
+
+                beatSlider.value = values.beat_hz;
+                carrierSlider.value = values.carrier_hz;
+                modSlider.value = values.mod_depth;
+                noiseSlider.value = values.noise_level;
+                toneSlider.value = values.tone_level;
+                document.querySelector(`input[name="noise-color"][value="${values.noise_color}"]`).checked = true;
+
+                // Manually trigger the 'oninput' event to update the displayed values
+                beatSlider.dispatchEvent(new Event('input'));
+                carrierSlider.dispatchEvent(new Event('input'));
+                modSlider.dispatchEvent(new Event('input'));
+                noiseSlider.dispatchEvent(new Event('input'));
+                toneSlider.dispatchEvent(new Event('input'));
+            }
+        });
+    });
+
+    document.getElementById('start-custom-session-btn').addEventListener('click', async () => {
+        const params = {
+            beat_hz: document.getElementById('beat-hz-slider').value,
+            carrier_hz: document.getElementById('carrier-hz-slider').value,
+            mod_depth: document.getElementById('mod-depth-slider').value,
+            noise_level: document.getElementById('noise-level-slider').value,
+            tone_level: document.getElementById('tone-level-slider').value,
+            noise_color: document.querySelector('input[name="noise-color"]:checked').value,
+        };
+        const prompt = document.getElementById('custom-prompt-input').value;
+
+        if (!prompt) {
+            alert("Please enter a base music prompt for the custom generator.");
+            return;
+        }
+
+        const btn = document.getElementById('start-custom-session-btn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Generating...';
+        btn.disabled = true;
+        const previewArea = document.getElementById('custom-generator-preview-area');
+        previewArea.innerHTML = '<span class="spinner"></span>';
+
+        try {
+            const audioBlob = await api.generateSongCustom(prompt, params);
+            const audioUrl = URL.createObjectURL(audioBlob);
+            
+            previewArea.innerHTML = `
+                <h4>Generated Track</h4>
+                <audio controls src="${audioUrl}" class="generated-audio"></audio>
+                <button id="start-custom-now-btn" class="btn btn-primary">Start Session Now</button>
+            `;
+            document.getElementById('start-custom-now-btn').addEventListener('click', () => {
+                startSessionWithCustomTrack(audioUrl, `Custom: ${prompt.substring(0, 20)}...`);
+            });
+
+        } catch (error) {
+            console.error(error);
+            alert(`Error: ${error.message}`);
+            previewArea.innerHTML = `<p style="color: #ff4d4d;">Generation failed. Please try again.</p>`;
+        } finally {
+            btn.textContent = originalText;
+            btn.disabled = false;
+        }
+    });
+
 
     // --- App Initialization ---
+
     const initApp = () => {
         loadPreferencesFromLocalStorage();
+        loadSavedTheme();
         setTimeout(() => {
             navigateTo('page-mood-check-in');
         }, 1500);
@@ -448,6 +596,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const recommendations = await api.getAlbumRecommendations(appState.currentMood, appState.currentUser.preferences);
         renderAlbums(recommendations);
     });
+
+    // Open Preview
 
     function _OpenPreview(x){
         var albums=mockAlbumDatabase;
@@ -473,6 +623,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     OpenPreview=_OpenPreview;
 
+    // Log Generator 
+
     function addSessionLog(albumTitle, durationMinutes) {
         const logEntry = {
             date: new Date().toISOString().split('T')[0], // 格式化为YYYY-MM-DD
@@ -488,18 +640,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 渲染会话日志
+    // Render Logs
     function renderSessionLogs() {
         const logList = document.querySelector('.session-log-list');
         if (!logList) return;
-        
-        // 从localStorage获取日志
         const logs = JSON.parse(localStorage.getItem('sessionLogs') || '[]');
-        
-        // 清空现有日志显示
         logList.innerHTML = '';
-        
-        // 添加日志条目
         logs.forEach(log => {
             const logEntry = document.createElement('div');
             logEntry.className = 'log-entry';

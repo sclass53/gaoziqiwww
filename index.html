@@ -21,7 +21,7 @@
             </div>
         </section>
         <section id="page-mood-check-in" class="page">
-            <div class="content-wrapper" style="padding-top: 40%;">
+            <div class="content-wrapper" style="padding-top: 200px;">
                 <h2>How are you feeling for this session?</h2>
                 <div class="mood-selector">
                     <button class="mood-option" data-mood="focused" title="Focused">🧠</button>
@@ -202,46 +202,82 @@
                     <div id="smart-generator-preview-area" class="preview-area"></div>
                 </div>
 
-                <!-- Custom -->
                 <div id="generator-custom" class="tab-content">
-                    <p>Craft your sound layer by layer for ultimate control.</p>
-                    <div class="custom-generator-layers">
-                        <!-- Layer Template -->
-                        <div class="layer-card">
-                            <div class="layer-header">
-                                <h4>Brainwave Layer</h4>
-                                <button class="btn-remove-layer">×</button>
-                            </div>
-                            <div class="layer-body">
-                                <select class="mood-select">
-                                    <option>Binaural Beats - Gamma (40Hz)</option>
-                                    <option>Isochronic Tones - Beta (15Hz)</option>
-                                </select>
-                                <label>Intensity</label>
-                                <input type="range" class="slider-input">
-                            </div>
-                        </div>
-                        <div class="layer-card">
-                            <div class="layer-header">
-                                <h4>Ambient Texture Layer</h4>
-                                <button class="btn-remove-layer">×</button>
-                            </div>
-                            <div class="layer-body">
-                                <select class="mood-select">
-                                    <option>Rain</option>
-                                    <option>Forest</option>
-                                    <option>White Noise</option>
-                                </select>
-                                <label>Volume</label>
-                                <input type="range" class="slider-input">
-                            </div>
+                    <p>Craft your sound by generating a base track and modulating it with precise controls.</p>
+                    
+                    <div class="form-group">
+                        <label for="custom-prompt-input">1. Base Music Prompt (for Lyria)</label>
+                        <textarea id="custom-prompt-input" class="text-input large" placeholder="e.g., 'Calm, ambient piano melody'"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>2. Load Preset Values (Optional)</label>
+                        <div class="preset-loader">
+                            <button class="btn btn-secondary btn-small custom-preset-btn" data-preset="Focus">Focus</button>
+                            <button class="btn btn-secondary btn-small custom-preset-btn" data-preset="Study">Study</button>
+                            <button class="btn btn-secondary btn-small custom-preset-btn" data-preset="Relax">Relax</button>
                         </div>
                     </div>
-                    <button class="btn btn-secondary">Add Layer</button>
+
+                    <!-- Foldable Modulation Controls -->
+                    <details class="accordion">
+                        <summary>3. Modulation Parameters</summary>
+                        <div class="custom-generator-controls">
+                            <div class="form-group">
+                                <label class="tooltip-container" data-tooltip="The frequency of the rhythmic pulse, associated with different mental states (e.g., 40Hz for focus).">
+                                    Beat Frequency (Hz): <span class="slider-value">40.0</span>
+                                </label>
+                                <input type="range" id="beat-hz-slider" class="slider-input" min="1" max="60" value="40" step="0.1" oninput="this.previousElementSibling.querySelector('span').textContent = this.value">
+                            </div>
+                            <div class="form-group">
+                                <label class="tooltip-container" data-tooltip="The base frequency for binaural tones. Different frequencies can have varying psychoacoustic effects.">
+                                    Carrier Frequency (Hz): <span class="slider-value">400</span>
+                                </label>
+                                <input type="range" id="carrier-hz-slider" class="slider-input" min="100" max="1000" value="400" step="1" oninput="this.previousElementSibling.querySelector('span').textContent = this.value">
+                            </div>
+                            <div class="form-group">
+                                <label class="tooltip-container" data-tooltip="How strongly the rhythmic pulse affects the volume of the music's mid-range frequencies.">
+                                    AM Depth: <span class="slider-value">0.25</span>
+                                </label>
+                                <input type="range" id="mod-depth-slider" class="slider-input" min="0" max="1" value="0.25" step="0.01" oninput="this.previousElementSibling.querySelector('span').textContent = this.value">
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Foldable Texture Controls -->
+                    <details class="accordion">
+                        <summary>4. Texture Parameters</summary>
+                        <div class="custom-generator-controls">
+                            <div class="form-group">
+                                <label class="tooltip-container" data-tooltip="The volume of the background noise layer (e.g., white, pink noise).">
+                                    Noise Level: <span class="slider-value">0.10</span>
+                                </label>
+                                <input type="range" id="noise-level-slider" class="slider-input" min="0" max="0.5" value="0.10" step="0.01" oninput="this.previousElementSibling.querySelector('span').textContent = this.value">
+                            </div>
+                            <div class="form-group">
+                                <label class="tooltip-container" data-tooltip="The volume of the pure binaural tone layer, mixed with the music.">
+                                    Tone Level: <span class="slider-value">0.08</span>
+                                </label>
+                                <input type="range" id="tone-level-slider" class="slider-input" min="0" max="0.5" value="0.08" step="0.01" oninput="this.previousElementSibling.querySelector('span').textContent = this.value">
+                            </div>
+                            <div class="form-group">
+                                <label class="tooltip-container" data-tooltip="The 'color' of the background noise. White is harsh like static, Pink is softer, Brown is deep like a rumble.">
+                                    Noise Color
+                                </label>
+                                <div class="radio-group">
+                                    <label><input class="ir" type="radio" name="noise-color" value="white" checked> White</label>
+                                    <label><input class="ir" type="radio" name="noise-color" value="pink"> Pink</label>
+                                    <label><input class="ir" type="radio" name="noise-color" value="brown"> Brown</label>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
                     <div class="generator-actions">
-                        <button class="btn btn-secondary">Preview Mix</button>
-                        <button class="btn btn-primary" data-target="page-session-creator">Start Session with this Sound</button>
+                        <button id="start-custom-session-btn" class="btn btn-primary btn-large">Generate & Start Session</button>
                     </div>
+                    <!-- Area for the generated track preview -->
+                    <div id="custom-generator-preview-area" class="preview-area"></div>
                 </div>
             </div>
         </section>
