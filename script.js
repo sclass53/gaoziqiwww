@@ -1,5 +1,5 @@
 var OpenPreview;
-const API_BASE_URL = 'https://600d2578-eae0-404f-8f13-5d39b39b0ffc-00-2oh5v0ocjq0ov.pike.replit.dev'
+const API_BASE_URL = 'https://resonaite.replit.app'
 document.addEventListener('DOMContentLoaded', () => {
     if (!localStorage.getItem('sessionLogs')) {
         localStorage.setItem('sessionLogs', JSON.stringify([]));
@@ -21,13 +21,20 @@ document.addEventListener('DOMContentLoaded', () => {
         'song-04': { id: 'song-04', title: 'Swan Lake', url: 'music/song4.mp3', tags: ['alpha', 'lo-fi', 'calm', 'study'] },
         'song-05': { id: 'song-05', title: 'Otherside', url: 'music/song5.mp3', tags: ['gamma', 'lo-fi', 'problem-solving'] },
         'song-06': { id: 'song-06', title: 'Sweden', url: 'music/song6.mp3', tags: ['alpha', 'lo-fi', 'calm', 'study'] },
-        'song-07': { id: 'song-07', title: 'Aria Math', url: 'music/song7.mp3', tags: ['alpha', 'lo-fi', 'calm', 'creative'] }
-    };
+        'song-07': { id: 'song-07', title: 'Aria Math', url: 'music/song7.mp3', tags: ['alpha', 'lo-fi', 'calm', 'creative'] },
+        'song-08': { id: 'song-08', title: 'Two Steps From Hell', url: 'music/STUDY1.wav', tags: ['gamma', 'problem-solving', 'creative'] },
+        'song-09': { id: 'song-09', title: 'River Flows In You', url: 'music/STUDY2.wav', tags: ['alpha', 'ambient'] },
+        'song-10': { id: 'song-10', title: 'Focus One', url: 'music/FOCUS1.wav', tags: ['alpha', 'lo-fi', 'calm', 'creative'] },
+        'song-11': { id: 'song-11', title: 'Focus Two', url: 'music/FOCUS2.wav', tags: ['beta', 'lo-fi', 'creative'] },
+    }; 
 
     const mockAlbumDatabase = {
         'album-01': { id: 'album-01', title: 'Deep Gamma: Code Structure', songIds: ['song-01', 'song-02'], tags: ['gamma', 'focus', 'electronic'] },
         'album-02': { id: 'album-02', title: 'Calm Coder: Classical Music', songIds: ['song-03', 'song-04'], tags: ['alpha', 'calm', 'lo-fi'] },
-        'album-03': { id: 'album-03', title: 'Minecraft: Selections', songIds: ['song-05', 'song-06', 'song-07'], tags: ['alpha', 'electronic', 'lo-fi'] }
+        'album-03': { id: 'album-03', title: 'Minecraft: Selections', songIds: ['song-05', 'song-06', 'song-07'], tags: ['alpha', 'electronic', 'lo-fi'] },
+        'album-04': { id: 'album-04', title: 'Studying Music', songIds: ['song-08', 'song-09'], tags: ['gamma', 'focus'] },
+        'album-05': { id: 'album-05', title: 'Focus: Tracks', songIds: ['song-10', 'song-11'], tags: ['alpha', 'classical', 'lo-fi'] },
+
     };
 
     // Global state for the application
