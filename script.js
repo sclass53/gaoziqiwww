@@ -1,5 +1,7 @@
 var OpenPreview;
 const API_BASE_URL = 'https://resonaite.replit.app'
+var enabledbreak=false;
+var breakAudioPlayer = document.getElementById('break-audio-player');
 document.addEventListener('DOMContentLoaded', () => {
     if (!localStorage.getItem('sessionLogs')) {
         localStorage.setItem('sessionLogs', JSON.stringify([]));
@@ -229,29 +231,62 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- Session Timer Logic ---
-    const formatTime = (seconds) => {
-        const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-        const secs = (seconds % 60).toString().padStart(2, '0');
-        return `${mins}:${secs}`;
-    };
+    // var breakAudioPlayer = document.getElementById('break-audio-player');
+    const playerWrapper = document.querySelector('.player-wrapper');
+    const phaseDisplay = document.getElementById('player-phase-display');
 
-    var startSessionTimer = (durationMinutes) => {
-        stopSessionTimer(); // Clear any existing timer
-        appState.currentSession.secondsRemaining = durationMinutes * 60;
+    // Extend appState to manage the session state
+    Object.assign(appState.currentSession, {
+        isPaused: false,
+        currentPhase: 'focus', // 'focus' or 'break'
+        focusDuration: 0,    // in seconds
+        breakDuration: 0,    // in seconds
+    });
+
+    // The main timer function, called every second
+    const tick = () => {
+        if (appState.currentSession.isPaused) return;
+
+        appState.currentSession.secondsRemaining--;
         playerElements.timer.textContent = formatTime(appState.currentSession.secondsRemaining);
 
-        appState.currentSession.timerId = setInterval(() => {
-            appState.currentSession.secondsRemaining--;
-            playerElements.timer.textContent = formatTime(appState.currentSession.secondsRemaining);
+        if (appState.currentSession.secondsRemaining <= 0) {
+            transitionPhase();
+        }
+    };
 
-            if (appState.currentSession.secondsRemaining <= 0) {
-                console.log("Session complete!");
-                stopSessionTimer();
-                pauseTrack();
-                alert("Focus Session Complete!");
-                navigateTo('page-hub');
+    // Handles switching between focus and break
+    const transitionPhase = () => {
+        if (appState.currentSession.currentPhase === 'focus') {
+            // --- Transitioning TO BREAK ---
+            appState.currentSession.currentPhase = 'break';
+            appState.currentSession.secondsRemaining = appState.currentSession.breakDuration;
+            
+            phaseDisplay.textContent = 'On a Break';
+            playerWrapper.classList.add('break-active');
+            
+            pauseTrack(); // Pause main music
+            if(enabledbreak){
+                breakAudioPlayer.pause(); 
+                breakAudioPlayer.play(); // Play break music
             }
-        }, 1000);
+        } else {
+            // --- Transitioning TO FOCUS ---
+            appState.currentSession.currentPhase = 'focus';
+            appState.currentSession.secondsRemaining = appState.currentSession.focusDuration;
+
+            phaseDisplay.textContent = 'Focus Time';
+            playerWrapper.classList.remove('break-active');
+
+            if(enabledbreak)breakAudioPlayer.pause(); // Pause break music
+            // Only resume main track if it was playing before the break
+            if (appState.currentSession.playlist.length > 0) {
+                audioPlayer.play();
+                appState.currentSession.isPlaying = true;
+                playerElements.playPauseBtn.innerHTML = '⏸️';
+            }
+        }
+        playerElements.timer.textContent = formatTime(appState.currentSession.secondsRemaining);
     };
 
     const stopSessionTimer = () => {
@@ -259,6 +294,35 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(appState.currentSession.timerId);
             appState.currentSession.timerId = null;
         }
+        // Reset UI
+        playerWrapper.classList.remove('break-active');
+        phaseDisplay.textContent = 'Focus Time';
+        if(enabledbreak)breakAudioPlayer.pause();
+        if(enabledbreak)breakAudioPlayer.currentTime = 0;
+    };
+
+    // This is the NEW main function to start a session
+    const startSession = (config) => {
+        breakAudioPlayer.pause();
+        breakAudioPlayer.currentTime = 0;
+        stopSessionTimer(); // Ensure any old timer is stopped
+        appState.currentSession.plannedDuration = config.focusDuration;
+        appState.currentSession.focusDuration = config.focusDuration;
+        appState.currentSession.breakDuration = config.breakDuration;
+        appState.currentSession.secondsRemaining = config.focusDuration;
+        appState.currentSession.currentPhase = 'focus';
+        appState.currentSession.isPaused = false;
+
+        playerElements.timer.textContent = formatTime(appState.currentSession.secondsRemaining);
+        appState.currentSession.timerId = setInterval(tick, 1000);
+
+        navigateTo('page-player');
+    };
+
+    const formatTime = (seconds) => {
+        const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const secs = (seconds % 60).toString().padStart(2, '0');
+        return `${mins}:${secs}`;
     };
 
     // Custom Session
@@ -396,20 +460,72 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Please select an album first.");
             return;
         }
-        // Build playlist
+        
+        const selectedWorkflow = document.querySelector('.workflow-option.active').dataset.workflow;
+        let sessionConfig = {};
+
+        switch (selectedWorkflow) {
+            case 'deep': // Your "Start" mode
+                sessionConfig = { focusDuration: 50 * 60, breakDuration: 10 * 60 };
+                break;
+            case 'pomodoro':
+                sessionConfig = { focusDuration: 25 * 60, breakDuration: 5 * 60 };
+                break;
+            case 'standard':
+                const focusMins = parseInt(document.getElementById('custom-focus-duration').value, 10);
+                const breakMins = parseInt(document.getElementById('custom-break-duration').value, 10);
+                if(breakMins==114514||focusMins==114514)alert("Bro! You have discovered this STINKY easter egg!\nCreator: Gino & Myron & Eric")
+                console.log(focusMins,breakMins);
+                sessionConfig = { focusDuration: focusMins * 60, breakDuration: breakMins * 60 };
+                break;
+            default: // Standard Focus
+                const duration = parseInt(document.getElementById('session-duration').value, 10);
+                sessionConfig = { focusDuration: duration * 60, breakDuration: 10 * 60 }; // Default 10 min break
+        }
+
+        // Build playlist and start the session
         appState.currentSession.playlist = appState.currentSession.album.songIds.map(id => mockSongDatabase[id]);
         appState.currentSession.currentTrackIndex = 0;
         
-        // Start timer
-        const duration = parseInt(document.getElementById('session-duration').value, 10);
-        startSessionTimer(duration);
-
-        // Start player
+        startSession(sessionConfig);
         playCurrentTrack();
-        navigateTo('page-player');
     });
     
     // --- Player Controls ---
+    const customInputs = document.getElementById('custom-duration-inputs');
+    document.querySelectorAll('.workflow-option').forEach(button => {
+        button.addEventListener('click', () => {
+            document.querySelectorAll('.workflow-option').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            if (button.dataset.workflow === 'standard') {
+                document.getElementById("btn-toggle").setAttribute("style","");
+            } else {
+                document.getElementById("btn-toggle").setAttribute("style","display: none;");
+            }
+        });
+    });
+
+    // Handle pausing by clicking the timer
+    playerElements.timer.addEventListener('click', () => {
+        appState.currentSession.isPaused = !appState.currentSession.isPaused;
+        playerElements.timer.style.opacity = appState.currentSession.isPaused ? 0.6 : 1;
+        // Also pause/play the relevant audio
+        if (appState.currentSession.isPaused) {
+            audioPlayer.pause();
+            if(enabledbreak)breakAudioPlayer.pause();
+        } else {
+            if (appState.currentSession.currentPhase === 'focus') audioPlayer.play();
+            else if(enabledbreak)breakAudioPlayer.play();
+        }
+    });
+
+    // Handle advancing to the break
+    document.getElementById('advance-to-break-btn').addEventListener('click', () => {
+        if (appState.currentSession.currentPhase === 'focus' && !appState.currentSession.isPaused) {
+            transitionPhase();
+        }
+    });
     function plpa(){
         if (appState.currentSession.isPlaying) {
             pauseTrack();
@@ -700,13 +816,24 @@ const frontendPresets = {
         }
     };
 
-    // 修改startSessionTimer函数以保存计划持续时间
-    const originalStartSessionTimer = startSessionTimer;
-    startSessionTimer = (durationMinutes) => {
-        appState.currentSession.plannedDuration = durationMinutes; // 保存计划持续时间
-        originalStartSessionTimer(durationMinutes);
-    };
-
     // 在切换到设置页面时渲染日志
     document.getElementById("settings-btn").addEventListener("click",renderSessionLogs);
 });
+
+var AdvancedHidden=true;
+function grgr(){
+    if(AdvancedHidden==true){
+        AdvancedHidden=false;
+        document.getElementById("custom-duration-inputs").setAttribute("style","");
+    }else{
+        AdvancedHidden=true;
+        document.getElementById("custom-duration-inputs").setAttribute("style","display: none;");
+    }
+}
+
+function SuspiciousUselessFunctionBruhPoopCode(){
+    enabledbreak=!enabledbreak;
+    breakAudioPlayer.play();
+    document.getElementById("StupidButtonBro").setAttribute("style","color: red;");
+    document.getElementById("StupidButtonBro").innerText="I TOLD YOU NOT TO CLICK!"
+}

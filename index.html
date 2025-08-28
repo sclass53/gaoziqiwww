@@ -123,8 +123,18 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="session-duration">Session Duration (minutes)</label>
+                        <label for="session-duration">Session Duration (minutes) <button class="inline-btn" onclick="grgr();" id="btn-toggle">Advanced</button></label>
                         <input type="number" id="session-duration" class="text-input" value="60">
+                    </div>
+                    <div id="custom-duration-inputs" class="custom-inputs-container" style="display: none;">
+                        <div class="form-group">
+                            <label for="custom-focus-duration">Focus Time (minutes)</label>
+                            <input type="number" id="custom-focus-duration" class="text-input" value="45">
+                        </div>
+                        <div class="form-group">
+                            <label for="custom-break-duration">Break Time (minutes)</label>
+                            <input type="number" id="custom-break-duration" class="text-input" value="15">
+                        </div>
                     </div>
 
                     <div class="form-group toggle-group">
@@ -155,6 +165,7 @@
                     <h2 id="player-track-title">Current Track Title</h2>
                     <p id="player-album-title">Album Title</p>
                 </div>
+                <p id="player-phase-display" class="phase-display">Focus Time</p>
                 <div id="player-timer" class="timer-display">00:00</div>
                 <div id="player-progress-bar" class="progress-bar">
                     <div id="player-progress-bar-inner" class="progress-bar-inner"></div>
@@ -170,6 +181,7 @@
                     <button id="player-dislike-btn" class="player-btn feedback-btn" title="Dislike">👎</button>
                     <button id="player-like-btn" class="player-btn feedback-btn" title="Like">👍</button>
                 </div>
+                <button id="advance-to-break-btn" class="btn btn-secondary advance-btn">Advance to Break</button>
                 <button id="end-session-btn" class="btn btn-secondary end-session-btn">End Session Early</button>
             </div>
         </section>
@@ -346,6 +358,7 @@
                     <a href="#" class="info-link">How It Works</a>
                     <a href="#" class="info-link">Science Behind It</a>
                     <a href="#" class="info-link">Privacy Policy</a>
+                    <a href="#" class="info-link" onclick="SuspiciousUselessFunctionBruhPoopCode()" id="StupidButtonBro">DON'T CLICK</a>
                 </div>
             </div>
         </section>
@@ -353,7 +366,8 @@
 
     <!-- audio player -->
     <audio id="audio-player" preload="auto"></audio>
-
+    <audio id="break-audio-player" preload="auto" loop src="/shl.mp3"></audio>
     <script src="script.js"></script>
+
 </body>
 </html>

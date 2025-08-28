@@ -309,7 +309,7 @@ h1, h2, h3, h4 {
     transition: transform 0.2s;
 }
 .album-card:hover {
-    transform: scale(1.02);
+    transform: scale(1.005);
 }
 .album-art-placeholder {
     width: 80px;
@@ -806,4 +806,85 @@ textarea.large { min-height: 100px; }
         
         grid-template-columns: 1fr 1fr;
     }
+}
+
+/* Hide custom inputs by default */
+.custom-inputs-container {
+    flex-direction: column;
+    gap: 1rem;
+    animation: fadeIn 0.3s; /* Use existing fadeIn animation */
+}
+
+/* Style for the phase display (Focus/Break) */
+.phase-display {
+    font-family: var(--font-family-mono);
+    font-size: 0.9rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    background-color: var(--bg-color-light);
+    color: var(--font-color-dark);
+    transition: all 0.3s ease;
+}
+
+/* Style for the "Advance to Break" button */
+.advance-btn {
+    width: auto;
+    padding: 0.5rem 1rem;
+    margin-top: 0.5rem;
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+/* Make the timer display look clickable */
+.timer-display {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.timer-display:hover {
+    opacity: 0.8;
+}
+
+/* --- Visual States for Break Time --- */
+
+/* A class to add to the player wrapper during a break */
+.player-wrapper.break-active .phase-display {
+    background-color: #55C2A3; /* Using a success/calm color */
+    color: #FFFFFF;
+}
+
+.player-wrapper.break-active .timer-display {
+    color: #55C2A3;
+}
+
+.player-wrapper.break-active #advance-to-break-btn {
+    display: none; /* Hide the button during a break */
+}
+
+.inline-btn{
+    display: inline-block;
+    width: auto;
+    height: auto;
+    background-color: var(--accent-color);
+    font-size: 11px;
+    height: 20px;
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: none;
+    color: var(--font-color);
+}
+
+.inline-btn:hover{
+    display: inline-block;
+    width: auto;
+    height: auto;
+    background-color: var(--accent-color-hover);
+    font-size: 11px;
+    height: 20px;
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: none;
+    color: var(--font-color);
 }
