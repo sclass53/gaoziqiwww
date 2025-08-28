@@ -267,9 +267,9 @@ document.addEventListener('DOMContentLoaded', () => {
             playerWrapper.classList.add('break-active');
             
             pauseTrack(); // Pause main music
+            // breakAudioPlayer.pause(); 
+            // breakAudioPlayer.currentTime=0;
             if(enabledbreak){
-                breakAudioPlayer.pause(); 
-                //breakAudioPlayer.currentTime=1;
                 breakAudioPlayer.play(); // Play break music
             }
         } else {
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
             phaseDisplay.textContent = 'Focus Time';
             playerWrapper.classList.remove('break-active');
 
-            breakAudioPlayer.pause(); // Pause break music
+            if(enabledbreak)breakAudioPlayer.pause(); // Pause break music
             // Only resume main track if it was playing before the break
             if (appState.currentSession.playlist.length > 0) {
                 audioPlayer.play();
@@ -316,6 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
         appState.currentSession.isPaused = false;
 
         playerElements.timer.textContent = formatTime(appState.currentSession.secondsRemaining);
+        playCurrentTrack();
         appState.currentSession.timerId = setInterval(tick, 1000);
 
         navigateTo('page-player');
@@ -335,7 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
         appState.currentSession.currentTrackIndex = 0;
 
         startSessionTimer(durationMinutes);
-        playCurrentTrack();
+        // playCurrentTrack();
         navigateTo('page-player');
     };
 
