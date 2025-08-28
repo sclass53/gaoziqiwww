@@ -10,8 +10,6 @@
 <body>
 
     <div id="app-container">
-        <!-- All page sections from the previous version remain exactly the same -->
-        <!-- S0: Splash Screen -->
         <section id="page-splash" class="page active">
             <div class="splash-content">
                 <svg class="logo" width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -22,8 +20,6 @@
                 <h1>ResonAIte Focus</h1>
             </div>
         </section>
-
-        <!-- S0.1: One-Time Mood Check-In -->
         <section id="page-mood-check-in" class="page">
             <div class="content-wrapper" style="padding-top: 40%;">
                 <h2>How are you feeling for this session?</h2>
@@ -39,7 +35,7 @@
             </div>
         </section>
 
-        <!-- S1: Hub (Main Navigation Point) -->
+        <!-- Hub -->
         <section id="page-hub" class="page">
             <div class="content-wrapper">
                 <header class="hub-header">
@@ -80,7 +76,7 @@
             </div>
         </section>
 
-        <!-- S2: Album Recommendation -->
+        <!-- Albums -->
         <section id="page-album-recommendations" class="page">
             <div class="content-wrapper">
                 <button class="btn-back" data-target="page-hub">&lt; Hub</button>
@@ -88,7 +84,7 @@
                     <h2>Recommends</h2>
                 </header>
                 <div id="album-grid" class="album-grid">
-                    <!-- Album cards will be dynamically inserted here. -->
+                    <!-- bruhbruhbruh. -->
                 </div>
             </div>
         </section>
@@ -101,12 +97,12 @@
                     <h2>Preview Album</h2>
                 </header>
                 <div id="music-grid" class="album-grid">
-                    <!-- Music cards will be dynamically inserted here. -->
+                    <!-- bruhbruhbruh -->
                 </div>
             </div>
         </section>
 
-        <!-- S3: Smart Session Creator -->
+        <!-- Smart Session -->
         <section id="page-session-creator" class="page">
             <div class="content-wrapper">
                 <header class="page-header">
@@ -151,7 +147,7 @@
             </div>
         </section>
 
-        <!-- S4: Focus Session Player -->
+        <!-- Focus Session -->
         <section id="page-player" class="page">
             <div class="player-wrapper">
                 <div class="player-art-placeholder"></div>
@@ -178,8 +174,7 @@
             </div>
         </section>
 
-        <!-- All other page sections (Song Generator, Co-op, Settings) remain exactly the same -->
-        <!-- S5: Song Generator Hub -->
+        <!-- Generatoe -->
         <section id="page-song-generator-hub" class="page">
             <div class="content-wrapper">
                 <button class="btn-back" data-target="page-hub">&lt; Hub</button>
@@ -191,7 +186,6 @@
                     <button class="tab-btn" data-tab="generator-custom">Custom Generator</button>
                 </div>
 
-                <!-- G1: Smart Generator -->
                 <div id="generator-smart" class="tab-content active">
                     <p>Describe your ideal focus sound, and let AI create it.</p>
                     <textarea id="ai-prompt-input" class="text-input large" placeholder="e.g., 'Uplifting electronic with a spacey vibe for creative coding, subtle Theta waves.'"></textarea>
@@ -208,7 +202,7 @@
                     <div id="smart-generator-preview-area" class="preview-area"></div>
                 </div>
 
-                <!-- G2: Custom Generator -->
+                <!-- Custom -->
                 <div id="generator-custom" class="tab-content">
                     <p>Craft your sound layer by layer for ultimate control.</p>
                     <div class="custom-generator-layers">
@@ -252,7 +246,7 @@
             </div>
         </section>
 
-        <!-- S6: Co-op Sync Mode -->
+        <!-- Sync -->
         <section id="page-coop" class="page">
             <div class="content-wrapper">
                 <button class="btn-back" data-target="page-hub">&lt; Hub</button>
@@ -270,7 +264,7 @@
             </div>
         </section>
 
-        <!-- S7: Settings & User Profile -->
+        <!-- Settings -->
         <section id="page-settings" class="page">
             <div class="content-wrapper">
                 <button class="btn-back" data-target="page-hub">&lt; Hub</button>
@@ -321,7 +315,7 @@
         </section>
     </div>
 
-    <!-- The single, hidden audio player for the entire app -->
+    <!-- audio player -->
     <audio id="audio-player" preload="auto"></audio>
 
     <script src="script.js"></script>

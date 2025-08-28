@@ -18,12 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
         'song-01': { id: 'song-01', title: 'Gamma Pulse', url: 'music/song1.mp3', tags: ['gamma', 'electronic', 'focus'] },
         'song-02': { id: 'song-02', title: 'Logic Flow', url: 'music/song2.mp3', tags: ['gamma', 'ambient', 'focus', 'problem-solving'] },
         'song-03': { id: 'song-03', title: 'Cavalleria Rusticana', url: 'music/song3.mp3', tags: ['alpha', 'lo-fi', 'calm', 'creative'] },
-        'song-04': { id: 'song-04', title: 'Swan Lake', url: 'music/song4.mp3', tags: ['alpha', 'lo-fi', 'calm', 'study'] }
+        'song-04': { id: 'song-04', title: 'Swan Lake', url: 'music/song4.mp3', tags: ['alpha', 'lo-fi', 'calm', 'study'] },
+        'song-05': { id: 'song-05', title: 'Otherside', url: 'music/song5.mp3', tags: ['gamma', 'lo-fi', 'problem-solving'] },
+        'song-06': { id: 'song-06', title: 'Sweden', url: 'music/song6.mp3', tags: ['alpha', 'lo-fi', 'calm', 'study'] },
+        'song-07': { id: 'song-07', title: 'Aria Math', url: 'music/song7.mp3', tags: ['alpha', 'lo-fi', 'calm', 'creative'] }
     };
 
     const mockAlbumDatabase = {
         'album-01': { id: 'album-01', title: 'Deep Gamma: Code Structure', songIds: ['song-01', 'song-02'], tags: ['gamma', 'focus', 'electronic'] },
-        'album-02': { id: 'album-02', title: 'Calm Coder: Classical Music', songIds: ['song-03', 'song-04'], tags: ['alpha', 'calm', 'lo-fi'] }
+        'album-02': { id: 'album-02', title: 'Calm Coder: Classical Music', songIds: ['song-03', 'song-04'], tags: ['alpha', 'calm', 'lo-fi'] },
+        'album-03': { id: 'album-03', title: 'Minecraft: Selections', songIds: ['song-05', 'song-06', 'song-07'], tags: ['alpha', 'electronic', 'lo-fi'] }
     };
 
     // Global state for the application
@@ -422,6 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } finally {
             btn.textContent = originalText;
             btn.disabled = false;
+            previewArea.innerHTML='';
         }
     });
 
@@ -475,16 +480,9 @@ document.addEventListener('DOMContentLoaded', () => {
             duration: durationMinutes
         };
         
-        // 从localStorage获取现有日志
         const existingLogs = JSON.parse(localStorage.getItem('sessionLogs') || '[]');
-        
-        // 添加新日志条目
-        existingLogs.unshift(logEntry); // 新日志放在最前面
-        
-        // 保存回localStorage
+        existingLogs.unshift(logEntry); 
         localStorage.setItem('sessionLogs', JSON.stringify(existingLogs));
-        
-        // 如果当前在设置页面，更新日志显示
         if (document.getElementById('page-settings').classList.contains('active')) {
             renderSessionLogs();
         }
