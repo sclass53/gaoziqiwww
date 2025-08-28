@@ -1,5 +1,5 @@
 var OpenPreview;
-
+const API_BASE_URL = 'https://600d2578-eae0-404f-8f13-5d39b39b0ffc-00-2oh5v0ocjq0ov.pike.replit.dev'
 document.addEventListener('DOMContentLoaded', () => {
     if (!localStorage.getItem('sessionLogs')) {
         localStorage.setItem('sessionLogs', JSON.stringify([]));
@@ -134,47 +134,20 @@ document.addEventListener('DOMContentLoaded', () => {
         /**
          * AI SONG GENERATOR
          * @param {string} prompt - The user's text prompt.
-         * @returns {Promise<object>} A promise that resolves with a mock generated song object.
+         * @param {string} mood - The user's mood.
          */
-        generateSongWithAI: async (prompt) => {
-            console.log(`Generating song for prompt: "${prompt}"`);
-            // --- START of Pluggable Section: Song Generator ---
-            // TODO: Replace this with your actual generative AI API call.
-            // The API should return a song object with a URL to the generated audio.
-            
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve({
-                        id: `ai-${Date.now()}`,
-                        title: `AI: ${prompt.substring(0, 20)}...`,
-                        url: 'music/song1.mp3', // Use a placeholder track for the prototype
-                        tags: ['ai-generated', 'ambient'],
-                    });
-                }, 2500); // Simulate AI generation time
+         generateSongSmart: async (prompt, mood) => {
+            const response = await fetch(`${API_BASE_URL}/generate-smart`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt, mood })
             });
-            // --- END of Pluggable Section: Song Generator ---
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || 'Failed to generate smart song.');
+            }
+            return await response.blob();
         },
-
-        /**
-         * BRAINWAVE MODULATOR
-         * @param {HTMLAudioElement} audio - The audio element to apply modulation to.
-         */
-        applyBrainwaveModulation: (audio) => {
-            // --- START of Pluggable Section: Modulator ---
-            // TODO: This is the entry point for your core scientific function.
-            // Integrate your audio processing library (e.g., using Web Audio API) here.
-            // You can create an AudioContext, connect the audio element as a source,
-            // and apply your custom filters, oscillators, or other modulation effects.
-            
-            console.log("Applying brainwave modulation to audio source (placeholder).");
-            // Example using Web Audio API (if you were to implement it):
-            // const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            // const source = audioCtx.createMediaElementSource(audio);
-            // const biquadFilter = audioCtx.createBiquadFilter();
-            // ... connect nodes and set parameters ...
-            // source.connect(biquadFilter).connect(audioCtx.destination);
-            // --- END of Pluggable Section: Modulator ---
-        }
     };
 
     // =================================================================================
@@ -200,7 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
         playerElements.album.textContent = appState.currentSession.album.title;
         audioPlayer.src = track.url;
         audioPlayer.play();
-        api.applyBrainwaveModulation(audioPlayer); // Apply modulator
         appState.currentSession.isPlaying = true;
         playerElements.playPauseBtn.innerHTML = '⏸️';
     };
@@ -264,6 +236,18 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(appState.currentSession.timerId);
             appState.currentSession.timerId = null;
         }
+    };
+
+    // Custom Session
+    const startSessionWithCustomTrack = (audioUrl, trackTitle, durationMinutes = 30) => {
+        // Create a temporary album and playlist for the generated track
+        appState.currentSession.album = { id: 'generated-album', title: 'Generated Sound' };
+        appState.currentSession.playlist = [{ id: 'generated-track', title: trackTitle, url: audioUrl }];
+        appState.currentSession.currentTrackIndex = 0;
+
+        startSessionTimer(durationMinutes);
+        playCurrentTrack();
+        navigateTo('page-player');
     };
 
     // --- UI Rendering ---
@@ -400,17 +384,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- AI Song Generator Button ---
     document.getElementById('generate-ai-song-btn').addEventListener('click', async () => {
+        // NOTE: Your HTML for the smart generator needs a <select class="mood-select">
+        // with options for 'Focus', 'Study', 'Relax'.
         const prompt = document.getElementById('ai-prompt-input').value;
+        const mood = document.getElementById("md-select").value;
+        console.log(mood);
+
         if (!prompt) {
             alert("Please enter a prompt.");
             return;
         }
-        alert("Generating AI track... this might take a moment.");
-        const generatedSong = await api.generateSongWithAI(prompt);
-        // In a real app, you'd add this to a preview player. For now, we'll just log it.
-        console.log("AI Song Generated:", generatedSong);
-        alert(`Generated song: "${generatedSong.title}". Check the console for details.`);
+
+        const btn = document.getElementById('generate-ai-song-btn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Generating...';
+        btn.disabled = true;
+        const previewArea = document.getElementById('smart-generator-preview-area');
+        previewArea.innerHTML='<span class="spinner"></span>';
+        try {
+            const audioBlob = await api.generateSongSmart(prompt, mood);
+            const audioUrl = URL.createObjectURL(audioBlob);
+            
+            // Create a preview player and a "Start Session" button in the UI
+             // Add this div to your HTML
+            previewArea.innerHTML = `
+                <h4>Generated Track</h4>
+                <audio controls src="${audioUrl}" class="generated-audio"></audio>
+                <button id="start-smart-session-btn" class="btn btn-primary">Start Session with this Track</button>
+            `;
+            document.getElementById('start-smart-session-btn').addEventListener('click', () => {
+                startSessionWithCustomTrack(audioUrl, `AI: ${prompt.substring(0, 20)}...`);
+            });
+
+        } catch (error) {
+            console.error(error);
+            alert(`Error: ${error.message}`);
+        } finally {
+            btn.textContent = originalText;
+            btn.disabled = false;
+        }
     });
+
+
 
     // --- App Initialization ---
     const initApp = () => {
@@ -499,8 +514,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 在session结束时记录日志
-    // 修改结束会话的代码
+    // Logs
+
     document.getElementById('end-session-btn').addEventListener('click', () => {
         // 计算实际持续时间（分钟）
         const plannedDuration = appState.currentSession.plannedDuration;

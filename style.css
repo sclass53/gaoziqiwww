@@ -579,3 +579,38 @@ textarea.large { min-height: 100px; }
 .music-title {
     color: #f0f0f0;
 }
+.log-container {
+    overflow-y: auto;
+    max-height: 200px;
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+.generated-audio {
+    background-color: rgb(130,130,130);
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+    height: 40px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.spinner {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: none;
+    border: 4px solid var(--font-color);
+    border-top: 4px solid transparent;
+    display: block;
+    animation: spin 1.2s linear infinite;
+}
+
+.preview-area {
+    justify-content: center;
+    display: flexbox;
+}

@@ -166,7 +166,7 @@
                 <div class="player-controls">
                     <button id="player-loop-btn" class="player-btn secondary-btn" title="Loop Track">🔁</button>
                     <button id="player-prev-btn" class="player-btn" title="Previous Track">⏮️</button>
-                    <button id="player-play-pause-btn" class="player-btn main-btn" title="Play/Pause" onclick="plpa();">▶️</button>
+                    <button id="player-play-pause-btn" class="player-btn main-btn" title="Play/Pause">▶️</button>
                     <button id="player-next-btn" class="player-btn" title="Next Track">⏭️</button>
                     <button class="player-btn secondary-btn info-btn" title="What's this frequency?">ℹ️</button>
                 </div>
@@ -196,11 +196,16 @@
                     <p>Describe your ideal focus sound, and let AI create it.</p>
                     <textarea id="ai-prompt-input" class="text-input large" placeholder="e.g., 'Uplifting electronic with a spacey vibe for creative coding, subtle Theta waves.'"></textarea>
                     <div class="generator-options">
-                        <select class="mood-select"><option>Mood: Creative</option></select>
+                        <select id="md-select" class="mood-select">
+                            <option value="Focus">Focus</option>
+                            <option value="Study">Study</option>
+                            <option value="Relax">Relax</option>
+                        </select>
                         <select class="mood-select"><option>Tempo: Medium</option></select>
                     </div>
                     <button id="generate-ai-song-btn" class="btn btn-primary">Generate Track</button>
                     <!-- Placeholder for generated track preview -->
+                    <div id="smart-generator-preview-area" class="preview-area"></div>
                 </div>
 
                 <!-- G2: Custom Generator -->
@@ -274,17 +279,19 @@
                 </header>
                 <div class="settings-section">
                     <h3>Session Log</h3>
-                    <div class="session-log-list">
-                        <!-- Log Entry Template -->
-                        <div class="log-entry">
-                            <span class="log-date">2024-05-21</span>
-                            <span class="log-album">Deep Gamma: Code Structure</span>
-                            <span class="log-duration">120 min</span>
-                        </div>
-                        <div class="log-entry">
-                            <span class="log-date">2024-05-20</span>
-                            <span class="log-album">Calm Coder: Alpha Study</span>
-                            <span class="log-duration">90 min</span>
+                    <div class="log-container">
+                        <div class="session-log-list">
+                            <!-- Log Entry Template -->
+                            <!-- <div class="log-entry">
+                                <span class="log-date">2024-05-21</span>
+                                <span class="log-album">Deep Gamma: Code Structure</span>
+                                <span class="log-duration">120 min</span>
+                            </div>
+                            <div class="log-entry">
+                                <span class="log-date">2024-05-20</span>
+                                <span class="log-album">Calm Coder: Alpha Study</span>
+                                <span class="log-duration">90 min</span>
+                            </div> -->
                         </div>
                     </div>
                 </div>
