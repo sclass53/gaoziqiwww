@@ -491,7 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
         appState.currentSession.currentTrackIndex = 0;
         
         startSession(sessionConfig);
-        playCurrentTrack();
+        //playCurrentTrack();
     });
     
     // --- Player Controls ---
